@@ -57,6 +57,7 @@ ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-w
 # see https://github.com/docker/docker/issues/8331
 RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war \
   && curl -fsSL ${JENKINS_URL}.asc -o /tmp/jenkins.war.asc \
+  && mkdir ~/.gnupg && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
   && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys $JENKINS_KEY \
   && gpg --batch --verify /tmp/jenkins.war.asc /usr/share/jenkins/jenkins.war
 
