@@ -6,8 +6,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y git curl && curl 
 
 ARG user=jenkins
 ARG group=jenkins
-ARG uid=1000
-ARG gid=1000
+ARG uid=3000
+ARG gid=3000
 ARG http_port=8080
 ARG agent_port=50000
 ARG JENKINS_HOME=/var/jenkins_home
@@ -17,13 +17,14 @@ ENV JENKINS_HOME $JENKINS_HOME
 ENV JENKINS_SLAVE_AGENT_PORT ${agent_port}
 ENV REF $REF
 
-# Jenkins is run with user `jenkins`, uid = 1000
+# Jenkins is run with user `jenkins`, uid = 3000
 # If you bind mount a volume from the host or a data container,
 # ensure you use the same uid
 RUN mkdir -p $JENKINS_HOME \
   && chown ${uid}:${gid} $JENKINS_HOME \
   && groupadd -g ${gid} ${group} \
   && useradd -d "$JENKINS_HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user}
+RUN groupadd -g 1002 host-docker && usermod -aG host-docker ${user}
 
 # Jenkins home directory is a volume, so configuration and build history
 # can be persisted and survive image upgrades
